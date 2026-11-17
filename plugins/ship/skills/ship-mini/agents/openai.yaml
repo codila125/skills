@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship Mini"
+  short_description: "Lighter ship: smaller crew, no QA phase"
+  default_prompt: "Use $ship-mini to take this request from idea to delivered software."

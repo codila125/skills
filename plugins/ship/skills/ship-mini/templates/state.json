@@ -1,0 +1,17 @@
+{
+  "request": "<the user's request, verbatim>",
+  "skill": "ship-mini",
+  "status": "running",
+  "phase": "preflight",
+  "branch": "<type>/<slug>",
+  "base_ref": "<ref the branch was cut from>",
+  "merge_base": null,
+  "worktree": null,
+  "gate_pane": null,
+  "slices": {},
+  "reds": {},
+  "rounds": { "review": 0 },
+  "gates": {},
+  "blockers": [],
+  "defaults": []
+}

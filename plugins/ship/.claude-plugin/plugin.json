@@ -1,0 +1,10 @@
+{
+  "name": "ship",
+  "version": "1.0.0",
+  "description": "Take a request from idea to delivered software through an orchestrated crew of agents",
+  "author": {
+    "name": "codila125"
+  },
+  "repository": "https://github.com/codila125/skills",
+  "keywords": ["orchestration", "delivery", "herdr", "tdd", "code-review"]
+}

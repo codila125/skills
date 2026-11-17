@@ -1,0 +1,15 @@
+{
+  "name": "ship",
+  "version": "1.0.0",
+  "description": "Take a request from idea to delivered software through an orchestrated crew of agents",
+  "skills": "./skills/",
+  "author": {
+    "name": "codila125"
+  },
+  "interface": {
+    "displayName": "Ship",
+    "shortDescription": "Idea to delivered software with an agent crew",
+    "developerName": "codila125",
+    "category": "Engineering"
+  }
+}

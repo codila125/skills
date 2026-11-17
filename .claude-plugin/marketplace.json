@@ -1,0 +1,15 @@
+{
+  "name": "codila125-skills",
+  "description": "Agent skills by codila125",
+  "owner": {
+    "name": "codila125"
+  },
+  "plugins": [
+    {
+      "name": "ship",
+      "source": "./plugins/ship",
+      "description": "Take a request from idea to delivered software through an orchestrated crew of agents",
+      "category": "Engineering"
+    }
+  ]
+}

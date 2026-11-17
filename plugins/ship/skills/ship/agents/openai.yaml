@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ship"
+  short_description: "Idea to delivered software with a full agent crew"
+  default_prompt: "Use $ship to take this request from idea to delivered software."

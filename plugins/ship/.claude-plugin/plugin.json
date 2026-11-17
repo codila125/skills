@@ -6,5 +6,12 @@
     "name": "codila125"
   },
   "repository": "https://github.com/codila125/skills",
-  "keywords": ["orchestration", "delivery", "herdr", "tdd", "code-review"]
+  "keywords": [
+    "orchestration",
+    "delivery",
+    "herdr",
+    "tdd",
+    "code-review"
+  ],
+  "license": "MIT"
 }

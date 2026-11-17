@@ -61,3 +61,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Every push and pull request runs
 - **Shellcheck**: runs `shellcheck` on every `*.sh` in `plugins/`.
 - **Claude plugin validate**: runs `claude plugin validate` on the marketplace and on
   each plugin.
+
+## License
+
+[MIT](LICENSE) © codila125. Use, change, and share these skills freely; keep the copyright notice and license text in copies.

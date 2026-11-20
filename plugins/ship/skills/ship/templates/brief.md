@@ -42,14 +42,20 @@ Tick what is pre-approved; delivery stops at the last ticked step.
 - [ ] publish a build or release
 - [ ] deploy
 
+## Security scan
+
+`<off|low|medium|high>` — <why this tier for this diff: blast radius, cost>. Tiers
+in `references/security-scan.md`, which scans the branch's diff only. Unset → `off`.
+
 ## Worker settings
 
 | Role | Kind | Model | Effort | Why |
 |------|------|-------|--------|-----|
 | …    | …    | …     | …      | …   |
 
-Resolved at preflight from the local crew roster. A resumed run inherits this
-table, not the roster it came from.
+Resolved at preflight from the local crew roster, plus the two security rows
+added at intake when the scan is above `off`. A resumed run inherits this table,
+not the roster it came from.
 
 Worker permission mode: `<mode>`
 

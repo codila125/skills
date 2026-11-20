@@ -11,6 +11,7 @@
   "slices": {},
   "reds": {},
   "rounds": { "review": 0 },
+  "security": { "tier": "off", "rounds": 0 },
   "gates": {},
   "blockers": [],
   "defaults": []

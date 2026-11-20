@@ -21,6 +21,7 @@ slice whose blockers are done, and that is what may build in parallel.
 - Domain skills: <installed skills the builder must load, if any>
 - Crew: <only when it deviates from the default builder: tier or role, and why>
 - Tests to write first: <…>
+- Security finding: <`S<n>` from security.md, or "none" — the regression test above goes red on the parent commit>
 - Files touched: `src/…`, `src/….test.ts`
 - Done bar: gate commands green, plus the observable behaviour that now works
 - Status: `pending` | `done` | `blocked`

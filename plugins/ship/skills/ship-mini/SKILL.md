@@ -19,12 +19,12 @@ This is `ship` with two phases cut: no researcher (the architect researches insi
 | Model, tier, effort policy | `<ship>/CREW.md`, with the role table in [`ROLES.md`](ROLES.md) replacing its Role defaults |
 | Procedures (grilling, tdd, code-review, diagnosing-bugs, prototype, domain-modeling, wizard) | `<ship>/references/` |
 | Gates | `<ship>/scripts/check.sh` (`ac`, `clean`, `scope`, `acceptance`) and `<ship>/scripts/gate.sh` |
-| Templates `brief`, `plan`, `review`, `log` | `<ship>/templates/` |
+| Templates `brief`, `plan`, `review`, `log`, `security` | `<ship>/templates/` |
 | Templates `spec`, `acceptance`, `handoff`, `state.json` | `<skill>/templates/` — these differ from ship's |
 
 ## The run folder
 
-`.ship/<slug>/` at the repo root of the worktree, exactly as in ship (add `.ship/` to `.git/info/exclude`), holding: `state.json`, `brief.md`, `spec.md`, `plan.md`, `review-primary.md`, `review-cross.md`, `acceptance.md`, `handoff.md`, `log.md`, and `evidence/`.
+`.ship/<slug>/` at the repo root of the worktree, exactly as in ship (add `.ship/` to `.git/info/exclude`), holding: `state.json`, `brief.md`, `spec.md`, `plan.md`, `review-primary.md`, `review-cross.md`, `security.md` (when the scan is on), `acceptance.md`, `handoff.md`, `log.md`, and `evidence/`.
 
 The two rules hold: acceptance criteria are `AC-1` … `AC-n` and every later file names them; every run file except `state.json` starts with the `status` / `blocking` / `open-questions` frontmatter of its skeleton. Rebuild from `state.json`, `brief.md`, and `plan.md` after any context loss — never from memory.
 
@@ -36,7 +36,7 @@ Done when: mode chosen, gate commands known, every role has a kind, model, and e
 
 ## 1. Intake (the user's first touchpoint)
 
-Run `<ship>/references/grilling.md` for **at most two rounds**: every branch without prerequisites in round 1, follow-ups only in round 2. Anything still open takes your recommended answer under **Assumed** in `brief.md`. Cover outcome, acceptance criteria (observable from outside, Given/When/Then), scope and constraints, delivery grants (unset → local branch only), and worker settings — as ship's step 1 lists them.
+Run `<ship>/references/grilling.md` for **at most two rounds**: every branch without prerequisites in round 1, follow-ups only in round 2. Anything still open takes your recommended answer under **Assumed** in `brief.md`. Cover outcome, acceptance criteria (observable from outside, Given/When/Then), scope and constraints, delivery grants (unset → local branch only), security scan `off` / `low` / `medium` / `high` (unset → `off`), and worker settings — as ship's step 1 lists them.
 
 Write `brief.md` from `<ship>/templates/brief.md`, show it, and get one explicit "go". Corrections edit `brief.md`; they do not reopen grilling. That "go" authorizes everything in the brief.
 
@@ -54,7 +54,7 @@ Spawn **architect** with the spec prompt; it writes `spec.md`, including the **P
 
 Check the Proof table yourself: every AC has a named test, and each test drives the outermost layer the suite reaches. A gap goes back to the architect, named.
 
-Gate: `check.sh ac <run> spec.md plan.md` and `check.sh clean <run> spec.md` are green; every slice fits one worker turn with its files listed; no two slices that could run in parallel list the same file; every Proof test lands in some slice's "Tests to write first".
+Gate: `check.sh ac <run> spec.md plan.md` and `check.sh clean <run> spec.md` are green; every slice fits one worker turn with its files listed; no two slices that could run in parallel list the same file; every Proof test lands in some slice's "Tests to write first"; a security fix slice names its `S<n>` and its regression test.
 
 ## 4. Build
 
@@ -64,15 +64,15 @@ Done when: every slice merged and the gates are green on the integration tip.
 
 ## 5. Review
 
-Exactly ship's step 7: **reviewer-primary** (Spec axis, Skeptic lens) and **reviewer-cross** (Standards axis, Architect + Minimalist lens) in parallel, each with Intent, scope-check table, security pass, and a verdict. You are **lead judge**: accept or reject each BLOCKING finding with one line of why in `log.md`; only accepted findings become fix slices. Reviewers also flag any Proof test that does not exercise its AC as claimed — with no QA, a hollow test is a BLOCKING finding.
+Exactly ship's step 7: **reviewer-primary** (Spec axis, Skeptic lens) and **reviewer-cross** (Standards axis, Architect + Minimalist lens) in parallel, each with Intent, scope-check table, security pass, and a verdict. You are **lead judge**: accept or reject each BLOCKING finding with one line of why in `log.md`; only accepted findings become fix slices. Reviewers also flag any Proof test that does not exercise its AC as claimed — with no QA, a hollow test is a BLOCKING finding. When the brief's **Security scan** is above `off`, run `<ship>/references/security-scan.md` at that tier, in parallel with the reviewers. It writes `security.md`.
 
-Loop: fix slices → build gates → both re-review only the fix diff. At most three rounds; then blocker.
+Loop: fix slices → build gates → both re-review only the fix diff, and the scan re-runs on it at `low`. At most three rounds; then blocker.
 
-Gate: `check.sh clean <run> review-primary.md review-cross.md` is green.
+Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` and `check.sh security <run>` when the scan is on.
 
 ## 6. Acceptance
 
-You fill `acceptance.md` from `<skill>/templates/acceptance.md`: each AC → its Proof test → the gate log where it ran green → PASS/FAIL. Run a final gate on the integration tip into `evidence/gate-final.log` and cite that. A FAIL routes back to its owner (spec gap → 3, bug → 4).
+You fill `acceptance.md` from `<skill>/templates/acceptance.md`: each AC → its Proof test → the gate log where it ran green → PASS/FAIL. Run a final gate on the integration tip into `evidence/gate-final.log` and cite that. A security survivor that names an AC keeps that AC from PASSing until its regression test and the `low` re-scan clear it. A FAIL routes back to its owner (spec gap → 3, bug → 4).
 
 Gate: `check.sh acceptance <run>` is green.
 

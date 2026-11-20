@@ -9,9 +9,13 @@
 #   check.sh scope      <run> <slice> <changed-files-list>
 #                                         changed files stay inside the slice's
 #                                         Files list in plan.md
+#   check.sh security   <run>             every candidate in security.md has vote
+#                                         files whose TRUE count and total match
+#                                         its `votes <t>/<n>`, and every survivor is
+#                                         rated in the range its section allows
 set -uo pipefail
 
-usage() { echo "usage: check.sh <ac|clean|acceptance|qa|scope> <run-folder> [args]" >&2; exit 2; }
+usage() { echo "usage: check.sh <ac|clean|acceptance|qa|scope|security> <run-folder> [args]" >&2; exit 2; }
 
 kind="${1:-}"
 run="${2:-}"
@@ -81,6 +85,50 @@ case "$kind" in
         done <<< "$patterns"
         [ "$inside" -eq 1 ] || require "scope: $file outside slice $slice"
       done < "$changed"
+    fi
+    ;;
+  security)
+    [ -f "$run/security.md" ] || require "security.md (absent)"
+    if [ -f "$run/security.md" ]; then
+      # Every candidate is one `- S<n> —` row: the section sets its severity band,
+      # and its `votes <t>/<n>` must match the vote files the panel actually wrote.
+      for section in BLOCKING NOTE; do
+        while IFS= read -r line; do
+          id=$(printf '%s\n' "$line" | awk '{print $2}')
+          case "$section" in
+            BLOCKING) printf '%s\n' "$line" | grep -qE '— (CRITICAL|HIGH) ' || require "$id rated CRITICAL or HIGH under BLOCKING" ;;
+            NOTE)     printf '%s\n' "$line" | grep -qE '— (MEDIUM|LOW) '  || require "$id rated MEDIUM or LOW under NOTE" ;;
+          esac
+          votes=$(printf '%s\n' "$line" | grep -oE 'votes [0-9]+/[0-9]+' | awk '{print $2}')
+          if [ -z "$votes" ]; then require "votes <t>/<n> on $id in security.md"; continue; fi
+          want_true=${votes%/*}
+          want_all=${votes#*/}
+          set -- "$run"/evidence/security-vote-"$id"-*.md
+          if [ ! -f "$1" ]; then require "vote files for $id in evidence/"; continue; fi
+          have_all=$#
+          have_true=0
+          for vote in "$@"; do
+            head -n 1 "$vote" | grep -qE '^VOTE (TRUE|FALSE|PREDATES)( |$)' || require "VOTE line in ${vote##*/}"
+            head -n 1 "$vote" | grep -qE '^VOTE TRUE( |$)' && have_true=$((have_true + 1))
+            case "$id" in
+              S*.*)
+                # A fix-round vote carries the three claims, and a fix a verifier cannot vouch
+                # for cannot be recorded as closing the finding.
+                for claim in targeted no-new-vulnerability behaviour-unchanged; do
+                  grep -qE "^CLAIM $claim (CONFIDENT|NOT_CONFIDENT|UNSURE)" "$vote" \
+                    || require "$id: CLAIM $claim line in ${vote##*/}"
+                done
+                if grep -qE '^CLAIM [a-z-]+ (NOT_CONFIDENT|UNSURE)' "$vote"; then
+                  head -n 1 "$vote" | grep -qE '^VOTE FALSE( |$)' \
+                    || require "$id: a claim short of CONFIDENT must vote FALSE in ${vote##*/}"
+                fi
+                ;;
+            esac
+          done
+          [ "$have_all" = "$want_all" ] || require "$id votes $votes: $have_all vote file(s) in evidence/"
+          [ "$have_true" = "$want_true" ] || require "$id votes $votes: $have_true TRUE vote file(s)"
+        done < <(awk -v want="$section" '/^### (BLOCKING|NOTE)/{s=$2; next} /^#{2,3} /{s=""} s==want && /^- S[0-9]+(\.[0-9]+)? /{print}' "$run/security.md")
+      done
     fi
     ;;
   *) usage ;;

@@ -25,6 +25,7 @@ Every run lives in `.ship/<slug>/` at the repo root of the worktree (add `.ship/
 | `plan.md`          | architect    | task graph: slices, blocking edges, owned files                 |
 | `review-cross.md`  | cross reviewer | findings per round, each marked BLOCKING or NOTE             |
 | `review-primary.md`| primary reviewer | findings per round, each marked BLOCKING or NOTE           |
+| `security.md`      | orchestrator | security scan survivors, pre-existing flaws, refuted candidates (only when the scan is on) |
 | `qa-report.md`     | qa           | evidence per test-plan check, bugs found                       |
 | `acceptance.md`    | orchestrator | each acceptance criterion → evidence → PASS/FAIL               |
 | `handoff.md`       | orchestrator | what shipped, how to use it, what was decided, what remains    |
@@ -55,6 +56,7 @@ Run the interview in [`references/grilling.md`](references/grilling.md) against 
 - **Acceptance criteria**: numbered `AC-1` … `AC-n`, each observable from outside — a Given/When/Then line is the easy way to test that. These are the contract every later gate checks.
 - **Scope and constraints**: what is explicitly out; platforms, performance budget, accessibility level, dependencies allowed, files or config that need permission to touch.
 - **Delivery grants**: exactly which outward actions are pre-approved: local branch only / push branch / open a PR or MR / merge / publish build or release / deploy. Anything not granted stops at handoff; if still open after round 3, assume local branch only.
+- **Security scan**: `off` / `low` / `medium` / `high`, with each tier's cost in one line from [`references/security-scan.md`](references/security-scan.md). If still open after round 3, assume `off`.
 - **Worker settings**: the crew from preflight (role → kind, model, effort, one-line why), and the permission mode workers start in. The user overrides here or not at all.
 
 Write `brief.md` from its template, show it, and get one explicit "go". Corrections at this point edit `brief.md` directly; they do not reopen grilling. That "go" is the durable authorization for everything in the brief.
@@ -116,11 +118,13 @@ Spawn **two reviewers in parallel** — `reviewer-primary` and `reviewer-cross` 
 
 Both state the **Intent** first, judge whether the work achieves it (not whether the intent is right), fill the scope-check table, and return a verdict: PASS / CONTESTED / REJECT. Plus the security pass: input handling, secrets, permissions, dependencies added.
 
+When the brief's **Security scan** is above `off`, run [`references/security-scan.md`](references/security-scan.md) at that tier, in parallel with the reviewers. It writes `security.md`.
+
 Then act as **lead judge**, not a postbox: for each blocking finding, accept or reject it with one line of why, recorded in `log.md`. Send rejections back to the reviewer with the reason so it is not raised again. Only accepted findings become fix slices.
 
-Loop: fix slices → build gates → both reviewers re-review only the fix diff, with the same lenses. At most three rounds; then blocker.
+Loop: fix slices → build gates → both reviewers re-review only the fix diff, with the same lenses, and the scan re-runs on it at `low`. At most three rounds; then blocker.
 
-Gate: `check.sh clean <run> review-primary.md review-cross.md` is green.
+Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` when the scan is on.
 
 ## 8. QA
 

@@ -25,8 +25,12 @@ between runs without you.
 - **Delivery grants.** At intake you choose which outward actions are pre-approved:
   local branch, push, open a PR, merge, release, or deploy. Anything you didn't grant
   stops at handoff. If you don't choose, it stays on a local branch.
+- **Security scan.** At intake you pick `off`, `low`, `medium`, or `high`. When it is
+  on, read-only researchers hunt the branch's diff for vulnerabilities during review.
+  A panel of verifiers then tries to refute each finding. Survivors rated CRITICAL or
+  HIGH block the review gate. If you don't choose, the scan is off.
 - **Self-contained.** The procedures for grilling, TDD, code review, bug diagnosis,
-  prototyping, domain modelling, and manual-step wizards are in
+  prototyping, domain modelling, security scanning, and manual-step wizards are in
   [`skills/ship/references/`](skills/ship/references/README.md). The skill doesn't
   depend on any other skill being installed.
 

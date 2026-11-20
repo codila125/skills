@@ -17,6 +17,7 @@ Replaces the Role defaults table in `<ship>/CREW.md`; every other rule there
 | reviewer-primary        | primary | worker | high   | —                                                             |
 | reviewer-cross          | cross   | lead   | high   | a different family has different blind spots than the builder  |
 | re-review of a fix diff | as above| as above | low  | —                                                             |
+| security-researcher, security-verifier | as ship | as ship | as ship | only when the brief's Security scan is above `off`; prompts in `<ship>/ROLES.md` |
 
 Small run (1–2 slices): the architect still runs at the lead tier, since it does
 the researcher's work.

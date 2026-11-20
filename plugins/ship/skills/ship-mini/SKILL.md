@@ -24,7 +24,7 @@ This is `ship` with two phases cut: no researcher (the architect researches insi
 
 ## The run folder
 
-`.ship/<slug>/` at the repo root of the worktree, exactly as in ship (add `.ship/` to `.git/info/exclude`), holding: `state.json`, `brief.md`, `spec.md`, `plan.md`, `review-primary.md`, `review-cross.md`, `acceptance.md`, `handoff.md`, `log.md`, and `evidence/`.
+`.ship/<slug>/` at the repo root of the worktree, exactly as in ship (add `.ship/` to `.git/info/exclude`), holding: `state.json`, `brief.md`, `spec.md`, `plan.md`, `review-primary.md`, `review-cross.md`, `security.md` (when the scan is on), `acceptance.md`, `handoff.md`, `log.md`, and `evidence/`.
 
 The two rules hold: acceptance criteria are `AC-1` … `AC-n` and every later file names them; every run file except `state.json` starts with the `status` / `blocking` / `open-questions` frontmatter of its skeleton. Rebuild from `state.json`, `brief.md`, and `plan.md` after any context loss — never from memory.
 
@@ -36,7 +36,7 @@ Done when: mode chosen, gate commands known, every role has a kind, model, and e
 
 ## 1. Intake (the user's first touchpoint)
 
-Run `<ship>/references/grilling.md` for **at most two rounds**: every branch without prerequisites in round 1, follow-ups only in round 2. Anything still open takes your recommended answer under **Assumed** in `brief.md`. Cover outcome, acceptance criteria (observable from outside, Given/When/Then), scope and constraints, delivery grants (unset → local branch only), and worker settings — as ship's step 1 lists them.
+Run `<ship>/references/grilling.md` for **at most two rounds**: every branch without prerequisites in round 1, follow-ups only in round 2. Anything still open takes your recommended answer under **Assumed** in `brief.md`. Cover outcome, acceptance criteria (observable from outside, Given/When/Then), scope and constraints, delivery grants (unset → local branch only), security scan `off` / `low` / `medium` / `high` (unset → `off`), and worker settings — as ship's step 1 lists them.
 
 Write `brief.md` from `<ship>/templates/brief.md`, show it, and get one explicit "go". Corrections edit `brief.md`; they do not reopen grilling. That "go" authorizes everything in the brief.
 
@@ -64,11 +64,11 @@ Done when: every slice merged and the gates are green on the integration tip.
 
 ## 5. Review
 
-Exactly ship's step 7: **reviewer-primary** (Spec axis, Skeptic lens) and **reviewer-cross** (Standards axis, Architect + Minimalist lens) in parallel, each with Intent, scope-check table, security pass, and a verdict. You are **lead judge**: accept or reject each BLOCKING finding with one line of why in `log.md`; only accepted findings become fix slices. Reviewers also flag any Proof test that does not exercise its AC as claimed — with no QA, a hollow test is a BLOCKING finding.
+Exactly ship's step 7: **reviewer-primary** (Spec axis, Skeptic lens) and **reviewer-cross** (Standards axis, Architect + Minimalist lens) in parallel, each with Intent, scope-check table, security pass, and a verdict. You are **lead judge**: accept or reject each BLOCKING finding with one line of why in `log.md`; only accepted findings become fix slices. Reviewers also flag any Proof test that does not exercise its AC as claimed — with no QA, a hollow test is a BLOCKING finding. When the brief's **Security scan** is above `off`, run `<ship>/references/security-scan.md` at that tier, in parallel with the reviewers. It writes `security.md`.
 
-Loop: fix slices → build gates → both re-review only the fix diff. At most three rounds; then blocker.
+Loop: fix slices → build gates → both re-review only the fix diff, and the scan re-runs on it at `low`. At most three rounds; then blocker.
 
-Gate: `check.sh clean <run> review-primary.md review-cross.md` is green.
+Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` when the scan is on.
 
 ## 6. Acceptance
 

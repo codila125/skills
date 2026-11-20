@@ -42,6 +42,10 @@ Tick what is pre-approved; delivery stops at the last ticked step.
 - [ ] publish a build or release
 - [ ] deploy
 
+## Security scan
+
+`<off|low|medium|high>`: tiers in `references/security-scan.md`. Unset → `off`.
+
 ## Worker settings
 
 | Role | Kind | Model | Effort | Why |

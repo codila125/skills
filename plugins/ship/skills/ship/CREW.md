@@ -71,6 +71,8 @@ most of them run.
 | reviewer-cross          | cross   | lead   | high   | a different family has different blind spots than the builder  |
 | qa (execute)            | primary | worker | medium | needs to drive the running app and read its screens              |
 | re-review of a fix diff | as above| as above | low  | —                                                             |
+| security-researcher     | primary | lead   | high   | only when the brief's Security scan is above `off`            |
+| security-verifier       | cross   | worker | high   | refutes from a different family than the one that found it    |
 
 `reviewer-cross` runs as the kind that reaches its own cross family — never the
 kind the builder ran on. Verify the pairing before spawning: a kind with no key

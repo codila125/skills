@@ -190,7 +190,7 @@ read, never the fix's own description of itself.
 Three claims, each CONFIDENT, NOT_CONFIDENT, or UNSURE:
 - targeted: every hunk traces to this finding.
 - no-new-vulnerability: the change, and the callers of what it moved, open no new attack path.
-- behaviour-unchanged: the same callers get the same results. Accepting or rejecting any input
+- behaviour-unchanged: callers see the same outputs as before. Accepting or rejecting any input
   beyond the exploit is a change, however small or defensible.
 A fix that disables a test, loosens a guard, widens an allowlist, or deletes a check is an
 automatic NOT_CONFIDENT, whatever else it closes.

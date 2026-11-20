@@ -25,9 +25,10 @@ Rules for this folder:
 - **Provenance lives here.** Everything above adapts the MIT-licensed
   `mattpocock/skills` collection (the file names the skill), and the frontier,
   scope-check, lens, and lead-judgment ideas in [`../SKILL.md`](../SKILL.md)
-  come from `poteto/noodle`. `security-scan.md` is original text. It takes only
-  the publicly documented shape of Anthropic's proprietary Claude Security plugin
-  (researchers, then a panel that refutes by default). Copy none of that
-  plugin's text into this folder: its license forbids redistribution. These are rewritten for a hands-off, multi-agent
+  come from `poteto/noodle`. These are rewritten for a hands-off, multi-agent
   run, not maintained as a mirror: when upstream changes, take the idea, not
   the diff.
+- **`security-scan.md` is original text.** It takes only the publicly documented
+  shape of Anthropic's proprietary Claude Security plugin: researchers, then a
+  panel that refutes by default. Copy none of that plugin's text into this
+  folder, since its license forbids redistribution.

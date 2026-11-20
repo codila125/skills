@@ -22,9 +22,8 @@ routes are all unchanged by the diff is **pre-existing**: a NOTE, never BLOCKING
 | `high` | a researcher writes `evidence/threat-model.md`: entry points, trust boundaries, assets the change touches | 4: **input**, **access**, **secrets**, **logic** | 3 verifiers, one lens each | 2 of 3 vote TRUE | 5 + 3*c* |
 
 `low` is triage: one vote confirms, so a survivor is a lead to read, not a proven
-finding, and `security.md` says so. Recommend the tier at intake from blast radius —
-auth, payments, crypto, secrets, uploads, or an unauthenticated endpoint → `medium`;
-docs, copy, or styling only → `off` — and record the reason. The user decides.
+finding, and `security.md` says so. Intake recommends a tier from blast radius and
+records the reason (SKILL.md step 1); the user decides.
 
 Categories, for splitting the work:
 

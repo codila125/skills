@@ -39,10 +39,8 @@ Diff: `<merge-base>..<integration tip>`, <n> files. Candidates: <n>; survived: <
 
 ## Fix rounds
 
-A fix round adds `<S-id>.<n>` rows for the findings it re-verifies — `S1.2` for `S1` in
-round 2 — and each of those vote files carries three
-`CLAIM <targeted|no-new-vulnerability|behaviour-unchanged> <CONFIDENT|NOT_CONFIDENT|UNSURE> — <evidence>`
-lines below its `VOTE` line. Any claim short of CONFIDENT keeps the finding BLOCKING.
+A fix round adds `<S-id>.<n>` rows (`S1.2` for `S1` in round 2); each vote file carries
+the three CLAIM lines defined in `references/security-scan.md` step 8.
 
 ## Defaults
 

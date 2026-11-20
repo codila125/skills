@@ -127,7 +127,7 @@ Then act as **lead judge**, not a postbox: for each blocking finding, accept or 
 
 Loop: fix slices → build gates → both reviewers re-review only the fix diff, with the same lenses, and the scan re-runs on it at `low`. At most three rounds; then blocker.
 
-Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` and `check.sh security <run>` when the scan is on. The second check re-derives each survivor's `votes <t>/<n>` from `evidence/`, so the panel's work is checked rather than believed.
+Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` and `check.sh security <run>` when the scan is on.
 
 ## 8. QA
 

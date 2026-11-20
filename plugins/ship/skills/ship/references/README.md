@@ -12,7 +12,7 @@ is loaded by default.
 | `tdd.md` | `mattpocock/skills` · `tdd` | builder | red → green loop |
 | `diagnosing-bugs.md` | `mattpocock/skills` · `diagnosing-bugs` | builder, second red | a feedback loop before any more code |
 | `code-review.md` | `mattpocock/skills` · `code-review`; smells from Fowler, *Refactoring* ch. 3 | both reviewers | what to look for and how to report it |
-| `security-scan.md` | Anthropic's Claude Security plugin, its public design only | orchestrator, review | tiered research of the diff, then a panel that tries to refute each finding |
+| `security-scan.md` | Anthropic's Claude Security plugin, its public design only | orchestrator, security roles | tiered research of the diff, then a panel that tries to refute each finding |
 | `wizard.md` | `mattpocock/skills` · `wizard` | orchestrator, handoff | a script that walks a human through manual steps |
 
 Rules for this folder:

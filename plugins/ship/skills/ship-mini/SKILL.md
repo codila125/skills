@@ -19,7 +19,7 @@ This is `ship` with two phases cut: no researcher (the architect researches insi
 | Model, tier, effort policy | `<ship>/CREW.md`, with the role table in [`ROLES.md`](ROLES.md) replacing its Role defaults |
 | Procedures (grilling, tdd, code-review, diagnosing-bugs, prototype, domain-modeling, wizard) | `<ship>/references/` |
 | Gates | `<ship>/scripts/check.sh` (`ac`, `clean`, `scope`, `acceptance`) and `<ship>/scripts/gate.sh` |
-| Templates `brief`, `plan`, `review`, `log` | `<ship>/templates/` |
+| Templates `brief`, `plan`, `review`, `log`, `security` | `<ship>/templates/` |
 | Templates `spec`, `acceptance`, `handoff`, `state.json` | `<skill>/templates/` — these differ from ship's |
 
 ## The run folder

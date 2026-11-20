@@ -44,7 +44,8 @@ Tick what is pre-approved; delivery stops at the last ticked step.
 
 ## Security scan
 
-`<off|low|medium|high>`: tiers in `references/security-scan.md`. Unset → `off`.
+`<off|low|medium|high>` — <why this tier for this diff: blast radius, cost>. Tiers
+in `references/security-scan.md`, which scans the branch's diff only. Unset → `off`.
 
 ## Worker settings
 

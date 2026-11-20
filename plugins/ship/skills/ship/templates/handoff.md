@@ -21,6 +21,13 @@ open-questions: 0
 |-------|--------|
 | <AC-id> | PASS |
 
+## Security
+
+<When the scan ran: the tier and the diff's range, survivors fixed, refuted
+candidates, and pre-existing flaws left alone with their `file:line`. When it did
+not run, write "scan off — not audited". Never reproduce a credential's value
+here; cite its location and use the Redactions section.>
+
 ## Decisions made on your behalf
 
 - <default from `log.md`> — <why>

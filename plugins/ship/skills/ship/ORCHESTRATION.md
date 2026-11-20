@@ -98,8 +98,8 @@ herdr agent prompt <role> "<role prompt>" --wait --until done --until blocked --
 
 ### Parallel roles
 
-Roles with no edge between them — the two reviewers are the only pair that
-qualifies — dispatch together: spawn both panes, then send both prompts with
+Roles with no edge between them — the two reviewers, and the security scan when it
+is on — dispatch together: spawn both panes, then send both prompts with
 `--wait` running in the background, so neither role waits on the other's turn.
 Waiting inside the loop serializes them and spends the second role's timeout for
 nothing.
@@ -114,12 +114,20 @@ A role that reports `blocked` or times out while its sibling is still working is
 read with `herdr agent read <role> --lines 20` on its own; the pair's gate opens
 only when both files are written.
 
+The scan adds agents to this phase, so respect the **four live agents** cap: the
+reviewers' two count against it. A researcher runs beside them; a threat model or
+the panel waits until a pane frees. Dispatch the panel in batches of at most two
+verifiers, one `--wait` per batch, and read the vote files between batches.
+
 | Phase | Timeout (ms) |
 |-------|--------------|
 | research | 900000 |
 | spec, test-plan, plan | 900000 |
 | build slice | 1800000 |
 | review, re-review | 900000 / 600000 |
+| security research, threat model | 900000 |
+| security panel, per batch | 900000 |
+| security re-scan (fix diff, `low`) | 600000 |
 | QA execute, re-test | 1800000 / 900000 |
 
 Worker states:

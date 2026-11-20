@@ -56,7 +56,7 @@ Run the interview in [`references/grilling.md`](references/grilling.md) against 
 - **Acceptance criteria**: numbered `AC-1` … `AC-n`, each observable from outside — a Given/When/Then line is the easy way to test that. These are the contract every later gate checks.
 - **Scope and constraints**: what is explicitly out; platforms, performance budget, accessibility level, dependencies allowed, files or config that need permission to touch.
 - **Delivery grants**: exactly which outward actions are pre-approved: local branch only / push branch / open a PR or MR / merge / publish build or release / deploy. Anything not granted stops at handoff; if still open after round 3, assume local branch only.
-- **Security scan**: `off` / `low` / `medium` / `high`, with each tier's cost in one line from [`references/security-scan.md`](references/security-scan.md). If still open after round 3, assume `off`.
+- **Security scan**: `off` / `low` / `medium` / `high`, with each tier's cost in one line from [`references/security-scan.md`](references/security-scan.md). It reads the branch's diff, never the whole tree. Recommend a tier from blast radius — auth, payments, crypto, secrets, uploads, or an unauthenticated endpoint → `medium`; docs, copy, or styling only → `off` — and record the reason. If still open after round 3, assume `off`.
 - **Worker settings**: the crew from preflight (role → kind, model, effort, one-line why), and the permission mode workers start in. The user overrides here or not at all.
 
 Write `brief.md` from its template, show it, and get one explicit "go". Corrections at this point edit `brief.md` directly; they do not reopen grilling. That "go" is the durable authorization for everything in the brief.
@@ -118,7 +118,7 @@ Spawn **two reviewers in parallel** — `reviewer-primary` and `reviewer-cross` 
 
 Both state the **Intent** first, judge whether the work achieves it (not whether the intent is right), fill the scope-check table, and return a verdict: PASS / CONTESTED / REJECT. Plus the security pass: input handling, secrets, permissions, dependencies added.
 
-When the brief's **Security scan** is above `off`, run [`references/security-scan.md`](references/security-scan.md) at that tier, in parallel with the reviewers. It writes `security.md`.
+When the brief's **Security scan** is above `off`, run [`references/security-scan.md`](references/security-scan.md) at that tier, in parallel with the reviewers. It writes `security.md` and the votes under `evidence/`; record the tier and round in `state.json.security`. Keep at most four agent panes live, the reviewers' two included ([`ORCHESTRATION.md`](ORCHESTRATION.md)).
 
 Then act as **lead judge**, not a postbox: for each blocking finding, accept or reject it with one line of why, recorded in `log.md`. Send rejections back to the reviewer with the reason so it is not raised again. Only accepted findings become fix slices.
 
@@ -169,7 +169,7 @@ before/after, or a few lines of pseudocode for the logic>
 5. Merge / publish build / publish release / deploy, using the repo's own scripts.
 6. Post-delivery smoke check: the delivered artifact works (the build installs, the deploy responds, the published channel serves it).
 
-Then write `handoff.md` from its template: what shipped and where, how to try it, decisions made on the user's behalf (from `log.md`), what is out of scope or deferred, and the next action that needs the user. Reference `spec.md`, `plan.md`, and the commits by path or sha rather than restating them, and leave the worktree in place.
+Then write `handoff.md` from its template: what shipped and where, how to try it, decisions made on the user's behalf (from `log.md`), what is out of scope or deferred, the scan's survivors and refutations when it ran, and the next action that needs the user. Reference `spec.md`, `plan.md`, and the commits by path or sha rather than restating them, and leave the worktree in place.
 
 ## 11. Handoff (the user's second touchpoint)
 

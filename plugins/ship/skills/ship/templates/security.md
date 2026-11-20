@@ -8,15 +8,20 @@ open-questions: 0
 
 Diff: `<merge-base>..<integration tip>`, <n> files. Candidates: <n>; survived: <n>.
 
+## Coverage
+
+- Read: <the changed files, and the files the data crosses>
+- Not read: `path` — <generated | vendored | lockfile | …> — <why this changed file was set aside>
+
 ## Round 1
 
 ### BLOCKING
 
-- `path:line` — <CRITICAL|HIGH> <CWE-id> <title> — <attacker, source → sink, the gain> — <the fix expected> — votes <t>/<n> — breaks <AC-id or "none">
+- `path:line` — <CRITICAL|HIGH> <CWE-id> <title> — confidence <low|medium|high> — <attacker, source → sink, the gain> — <the fix expected> — votes <t>/<n> — breaks <AC-id or "none">
 
 ### NOTE
 
-- `path:line` — <MEDIUM|LOW> <CWE-id> <title> — <one line> — votes <t>/<n>
+- `path:line` — <MEDIUM|LOW> <CWE-id> <title> — confidence <low|medium|high> — <one line> — votes <t>/<n>
 
 ## Pre-existing
 
@@ -24,9 +29,13 @@ Diff: `<merge-base>..<integration tip>`, <n> files. Candidates: <n>; survived: <
 
 ## Refuted
 
-| Candidate | Decisive `file:line` | Why it fell |
-|-----------|----------------------|-------------|
-| …         | …                    | …           |
+| Candidate | Vote | Decisive `file:line` | Why it fell |
+|-----------|------|----------------------|-------------|
+| `path:line` | FALSE | `path:line`           | …           |
+
+## Unverified
+
+- `path:line` — <title> — over the twelve-candidate cap — <why it was not paneled>
 
 ## Defaults
 

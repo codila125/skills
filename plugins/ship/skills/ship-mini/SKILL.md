@@ -54,7 +54,7 @@ Spawn **architect** with the spec prompt; it writes `spec.md`, including the **P
 
 Check the Proof table yourself: every AC has a named test, and each test drives the outermost layer the suite reaches. A gap goes back to the architect, named.
 
-Gate: `check.sh ac <run> spec.md plan.md` and `check.sh clean <run> spec.md` are green; every slice fits one worker turn with its files listed; no two slices that could run in parallel list the same file; every Proof test lands in some slice's "Tests to write first".
+Gate: `check.sh ac <run> spec.md plan.md` and `check.sh clean <run> spec.md` are green; every slice fits one worker turn with its files listed; no two slices that could run in parallel list the same file; every Proof test lands in some slice's "Tests to write first"; a security fix slice names its `S<n>` and its regression test.
 
 ## 4. Build
 
@@ -68,11 +68,11 @@ Exactly ship's step 7: **reviewer-primary** (Spec axis, Skeptic lens) and **revi
 
 Loop: fix slices → build gates → both re-review only the fix diff, and the scan re-runs on it at `low`. At most three rounds; then blocker.
 
-Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` when the scan is on.
+Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` and `check.sh security <run>` when the scan is on.
 
 ## 6. Acceptance
 
-You fill `acceptance.md` from `<skill>/templates/acceptance.md`: each AC → its Proof test → the gate log where it ran green → PASS/FAIL. Run a final gate on the integration tip into `evidence/gate-final.log` and cite that. A FAIL routes back to its owner (spec gap → 3, bug → 4).
+You fill `acceptance.md` from `<skill>/templates/acceptance.md`: each AC → its Proof test → the gate log where it ran green → PASS/FAIL. Run a final gate on the integration tip into `evidence/gate-final.log` and cite that. A security survivor that names an AC keeps that AC from PASSing until its regression test and the `low` re-scan clear it. A FAIL routes back to its owner (spec gap → 3, bug → 4).
 
 Gate: `check.sh acceptance <run>` is green.
 

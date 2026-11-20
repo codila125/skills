@@ -29,8 +29,10 @@ between runs without you.
   on, read-only researchers hunt the branch's diff — never the whole tree — for
   vulnerabilities during review, and a panel of verifiers then tries to refute each
   finding. Survivors rated CRITICAL or HIGH block the review gate, and `handoff.md`
-  reports what survived, what was refuted, and what was left alone. The scan writes
-  nothing outside the run folder. If you don't choose, the scan is off.
+  reports what survived, what was refuted, and what was left alone. The panel's votes
+  are files under the run folder's `evidence/`, and
+  [`scripts/check.sh`](skills/ship/scripts/check.sh) `security` re-counts them, so the
+  scan writes nothing outside the run folder and claims nothing the files do not show. If you don't choose, the scan is off.
 - **Self-contained.** The procedures for grilling, TDD, code review, bug diagnosis,
   prototyping, domain modelling, security scanning, and manual-step wizards are in
   [`skills/ship/references/`](skills/ship/references/README.md). The skill doesn't

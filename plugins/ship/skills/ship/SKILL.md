@@ -42,7 +42,10 @@ Every run lives in `.ship/<slug>/` at the repo root of the worktree (add `.ship/
 
 1. Pick the crew mode: `herdr` when `test "${HERDR_ENV:-}" = 1` passes, else `subagents`, else `sequential` ([`ORCHESTRATION.md`](ORCHESTRATION.md)).
 2. Read the repo's agent instructions (`AGENTS.md`, `CLAUDE.md`, or equivalent).
-3. Find the repo's own verification commands — whatever its build tool calls them (a JS repo usually has typecheck, lint, test, build; Go has vet and test; Rust has clippy and fmt) — from its manifest (`package.json` scripts, `Makefile`, `pyproject.toml`, `Cargo.toml`, `go.mod`) or its docs, and its **verification entry point** if it has one: a `verify-*` skill, `scripts/verify.sh`, or a doctor/launch command that brings the app up and drives it. An entry point beats manifest parsing — it encodes how to launch and prove, which no manifest carries. A gate the repo does not have is recorded as `none`, never invented.
+3. Find the repo's own verification commands — whatever its build tool calls them (a JS repo usually has typecheck, lint, test, build; Go has vet and test; Rust has clippy and fmt) — from its manifest (`package.json` scripts, `Makefile`, `pyproject.toml`, `Cargo.toml`, `go.mod`) or its docs, and its **verification entry point** if it has one: a `verify-*` skill, `scripts/verify.sh`, or a doctor/launch command that brings the app up and drives it. An entry point beats manifest parsing — it encodes how to launch and prove, which no manifest carries. A gate the repo does not have is recorded as `none`, never invented. Record its
+   own security tooling the same way — secret scanning, dependency audit
+   (`npm audit`, `govulncheck`, `pip-audit`), SAST — because the intake scan
+   complements those checks and never replaces them.
 4. Build the **crew** from [`CREW.md`](CREW.md): read the local roster it names, run each family's detect command, and let a family that fails detection sit out this run. Resolve every role's kind, model, and effort — including the substitutions a family's models force — and write the resolved table into `brief.md`.
 5. Choose the **slug** (kebab-case, from the request) and the base ref. Resume instead of starting fresh if the repo root's `.ship/*/state.json` holds a `running` or `aborted` run whose `request` matches. Otherwise create `.ship/<slug>/` at the repo root (`git rev-parse --show-toplevel`) with its `evidence/` folder, and copy `templates/state.json` in as its starting state.
 
@@ -91,7 +94,7 @@ Gate: `check.sh ac <run> spec.md test-plan.md` and `check.sh clean <run> spec.md
 
 Architect turns the spec into `plan.md`: **tracer-bullet** slices, each declaring its **blocked by** edges and the files it exclusively owns. The edges make the plan a task graph, so the **frontier** — every slice whose blockers are done — is what builds in parallel. A design question the spec could not settle on paper runs as a [prototype](references/prototype.md) first, and only the decision it produced folds into the plan.
 
-Gate: `check.sh ac <run> plan.md` is green, every slice fits one worker turn with its files listed, every slice names a domain skill when one applies and a crew override when it deviates, and no two slices that could run in parallel list the same file.
+Gate: `check.sh ac <run> plan.md` is green, every slice fits one worker turn with its files listed, every slice names a domain skill when one applies and a crew override when it deviates, and no two slices that could run in parallel list the same file. A security fix slice names its `S<n>` and the regression test that goes red on the parent commit.
 
 ## 6. Build
 
@@ -124,19 +127,19 @@ Then act as **lead judge**, not a postbox: for each blocking finding, accept or 
 
 Loop: fix slices → build gates → both reviewers re-review only the fix diff, with the same lenses, and the scan re-runs on it at `low`. At most three rounds; then blocker.
 
-Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` when the scan is on.
+Gate: `check.sh clean <run> review-primary.md review-cross.md` is green, plus `security.md` and `check.sh security <run>` when the scan is on. The second check re-derives each survivor's `votes <t>/<n>` from `evidence/`, so the panel's work is checked rather than believed.
 
 ## 8. QA
 
 QA executes `test-plan.md` against the **running software**, not the source, using the repo's verification entry point when it has one and its run command otherwise. Evidence goes under `.ship/<slug>/evidence/`, and `qa-report.md` records one PASS/FAIL row per check.
 
-Bugs route back to the builder as fix slices, through the build gates and a pass on the fix by both reviewers, then QA re-tests only the affected checks plus the regression suite. At most three QA rounds; then blocker.
+Bugs route back to the builder as fix slices, through the build gates and a pass on the fix by both reviewers, then QA re-tests only the affected checks plus the regression suite. A security fix is proven by its regression test and the `low` re-scan, not by QA; QA re-tests only the behaviour the fix touched. At most three QA rounds; then blocker.
 
 Gate: `check.sh qa <run>` is green, and no open bug reaches the severity bar in the brief.
 
 ## 9. Acceptance
 
-You, not a worker, fill `acceptance.md`: each AC → the evidence that proves it → PASS/FAIL. Any FAIL routes back to the phase that owns it (spec gap → 4, bug → 6).
+You, not a worker, fill `acceptance.md`: each AC → the evidence that proves it → PASS/FAIL. Any FAIL routes back to the phase that owns it (spec gap → 4, bug → 6). A security survivor that names an AC keeps that AC from PASSing until its fix lands and the re-scan clears it.
 
 Gate: `check.sh acceptance <run>` is green.
 
@@ -166,6 +169,8 @@ before/after, or a few lines of pseudocode for the logic>
 
 **Blast Radius:** <one word>
 ```
+When the scan ran, the PR body names the fix and its regression test, never the exploit path, a payload, or a credential: that detail stays in `handoff.md`, which does not leave the run folder.
+
 5. Merge / publish build / publish release / deploy, using the repo's own scripts.
 6. Post-delivery smoke check: the delivered artifact works (the build installs, the deploy responds, the published channel serves it).
 
@@ -177,7 +182,7 @@ Report in a few lines: outcome, link to the PR/MR or build, acceptance table, de
 
 Finish with a **retro**: every loop-back in this run is a candidate, and the categories are ordered by what fixes them most cheaply.
 
-1. **An automated check** that would have caught it — the default. A gate command, lint rule, or pre-commit hook beats any sentence, and a repo gate that exists but runs nowhere is the finding. A QA run that had to improvise launch or drive steps is the same finding one level up: the repo needs a verification entry point (launch, doctor, drive, prove) that QA and builders load instead of rediscovering. Name it concretely.
+1. **An automated check** that would have caught it — the default. A security survivor the panel caught at review is a loop-back too: name the scanner, lint rule, or audit that would have caught it before review. A gate command, lint rule, or pre-commit hook beats any sentence, and a repo gate that exists but runs nowhere is the finding. A QA run that had to improvise launch or drive steps is the same finding one level up: the repo needs a verification entry point (launch, doctor, drive, prove) that QA and builders load instead of rediscovering. Name it concretely.
 2. **A navigation pointer** — the agent spent time finding something a one-line pointer would have named.
 3. **A coding standard** the reviewer enforces — judgement calls only, the ones no check could ever catch.
 4. **Tool economy and no-ops** — an expensive call that could be cheaper, an instruction that changes nothing.

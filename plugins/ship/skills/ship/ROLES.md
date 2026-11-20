@@ -176,3 +176,7 @@ Write <run>/evidence/security-vote-<candidate>-<lens>.md with one line only, sev
 VOTE <TRUE|FALSE|PREDATES> <severity if TRUE> <decisive file:line> — <reason>
 Then reply with that same line and nothing else.
 ```
+
+At `low` the single verifier holds all three lenses, so it writes one file per candidate,
+`security-vote-<candidate>-all.md`, stating which lens decided. The count in `security.md`
+must equal the number of vote files, so the arithmetic stays checkable at every tier.

@@ -53,8 +53,12 @@ panel can lower a severity but never raise it.
 3. Deduplicate by sink `file:line`, enclosing symbol, and CWE, keeping the highest severity. Cap the panel at twelve candidates; the rest stay in their evidence file and are listed under **Unverified** with the reason, never dropped silently.
 4. Dispatch the panel, one verifier per candidate × lens. Each writes `evidence/security-vote-<candidate>-<lens>.md`: the file is the vote, and a reply with no file does not count.
 5. Count the votes from the files; never from memory of a reply.
-6. Write `security.md` from `templates/security.md`. CRITICAL and HIGH survivors go under BLOCKING, MEDIUM and LOW under NOTE, pre-existing flaws under Pre-existing, refuted candidates under Refuted with their decisive `file:line`, and capped ones under Unverified. Fill **Coverage**: the range, the files read, and any changed file set aside (generated, vendored, a lockfile) with the reason, so a clean result reads as covered-and-clean rather than unexamined.
+6. Write `security.md` from `templates/security.md`, every line carrying its candidate id (`S1`, `S2`, …). CRITICAL and HIGH survivors go under BLOCKING, MEDIUM and LOW under NOTE, pre-existing flaws under Pre-existing, refuted candidates under Refuted with their decisive `file:line`, and capped ones under Unverified. Fill **Coverage**: the range, the files read, and any changed file set aside (generated, vendored, a lockfile) with the reason, so a clean result reads as covered-and-clean rather than unexamined.
 7. As **lead judge**, accept or reject each BLOCKING item exactly as you do for review findings, one line of why in `log.md`. Accepted items become fix slices that write a failing test first (`tdd.md`); a fix that only blocks the reported input is not a fix.
 8. On a fix round, re-scan the fix commits at `low` and pass the accepted findings in as candidates: each must fall now because its path is closed, and the fix must add nothing new at MEDIUM or above. Append a round.
 
-Done when: every candidate has a verdict in `security.md` and its frontmatter counts are true.
+`check.sh security <run>` re-derives the tallies from the vote files, so a survivor's
+`votes <t>/<n>` is checked rather than believed.
+
+Done when: every candidate has a verdict in `security.md`, its frontmatter counts are
+true, and `check.sh security <run>` is green.

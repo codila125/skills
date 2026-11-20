@@ -110,10 +110,24 @@ case "$kind" in
           for vote in "$@"; do
             head -n 1 "$vote" | grep -qE '^VOTE (TRUE|FALSE|PREDATES)( |$)' || require "VOTE line in ${vote##*/}"
             head -n 1 "$vote" | grep -qE '^VOTE TRUE( |$)' && have_true=$((have_true + 1))
+            case "$id" in
+              S*.*)
+                # A fix-round vote carries the three claims, and a fix a verifier cannot vouch
+                # for cannot be recorded as closing the finding.
+                for claim in targeted no-new-vulnerability behaviour-unchanged; do
+                  grep -qE "^CLAIM $claim (CONFIDENT|NOT_CONFIDENT|UNSURE)" "$vote" \
+                    || require "$id: CLAIM $claim line in ${vote##*/}"
+                done
+                if grep -qE '^CLAIM [a-z-]+ (NOT_CONFIDENT|UNSURE)' "$vote"; then
+                  head -n 1 "$vote" | grep -qE '^VOTE FALSE( |$)' \
+                    || require "$id: a claim short of CONFIDENT must vote FALSE in ${vote##*/}"
+                fi
+                ;;
+            esac
           done
           [ "$have_all" = "$want_all" ] || require "$id votes $votes: $have_all vote file(s) in evidence/"
           [ "$have_true" = "$want_true" ] || require "$id votes $votes: $have_true TRUE vote file(s)"
-        done < <(awk -v want="$section" '/^### (BLOCKING|NOTE)/{s=$2; next} /^#{2,3} /{s=""} s==want && /^- S[0-9]+ /{print}' "$run/security.md")
+        done < <(awk -v want="$section" '/^### (BLOCKING|NOTE)/{s=$2; next} /^#{2,3} /{s=""} s==want && /^- S[0-9]+(\.[0-9]+)? /{print}' "$run/security.md")
       done
     fi
     ;;

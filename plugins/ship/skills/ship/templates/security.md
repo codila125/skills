@@ -37,6 +37,13 @@ Diff: `<merge-base>..<integration tip>`, <n> files. Candidates: <n>; survived: <
 
 - S4 — `path:line` — <title> — over the twelve-candidate cap — <why it was not paneled>
 
+## Fix rounds
+
+A fix round adds `<S-id>.<n>` rows for the findings it re-verifies — `S1.2` for `S1` in
+round 2 — and each of those vote files carries three
+`CLAIM <targeted|no-new-vulnerability|behaviour-unchanged> <CONFIDENT|NOT_CONFIDENT|UNSURE> — <evidence>`
+lines below its `VOTE` line. Any claim short of CONFIDENT keeps the finding BLOCKING.
+
 ## Defaults
 
 - <default chosen> — <why>

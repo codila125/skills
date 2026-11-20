@@ -180,3 +180,22 @@ Then reply with that same line and nothing else.
 At `low` the single verifier holds all three lenses, so it writes one file per candidate,
 `security-vote-<candidate>-all.md`, stating which lens decided. The count in `security.md`
 must equal the number of vote files, so the arithmetic stays checkable at every tier.
+
+Re-scan prompt, one per accepted finding on a fix round:
+
+```
+One accepted finding and the fix commits that claim to close it follow. Decide whether the fix
+may be recorded as closing it. Read the changed code and its callers: a claim needs evidence you
+read, never the fix's own description of itself.
+Three claims, each CONFIDENT, NOT_CONFIDENT, or UNSURE:
+- targeted: every hunk traces to this finding.
+- no-new-vulnerability: the change, and the callers of what it moved, open no new attack path.
+- behaviour-unchanged: the same callers get the same results. Accepting or rejecting any input
+  beyond the exploit is a change, however small or defensible.
+A fix that disables a test, loosens a guard, widens an allowlist, or deletes a check is an
+automatic NOT_CONFIDENT, whatever else it closes.
+Write <run>/evidence/security-vote-<candidate>.<round>-<lens>.md: line 1 is
+VOTE <TRUE|FALSE> <severity if TRUE> <decisive file:line> — <reason>, then one line per claim:
+CLAIM <targeted|no-new-vulnerability|behaviour-unchanged> <CONFIDENT|NOT_CONFIDENT|UNSURE> — <evidence>
+Vote FALSE when any claim is not CONFIDENT. Reply with the VOTE line only.
+```
